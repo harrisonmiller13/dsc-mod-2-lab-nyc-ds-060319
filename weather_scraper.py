@@ -31,15 +31,13 @@ class weather_scrape(self):
         self.exclude = 'daily,flags,minutely,hourly,alerts'
 
     def api_call(self,date):
-        
-        payload = {'key':API_Key,'latitude':'52.52437','longitude': '13.41053','time':df['Date'],'exclude': ['minutely','hourly','daily','alerts','flags']}
-        response = requests.get(self.url,params=payload)
-       #dark sky not liking how requests is forming the url query... T-T
+    
+        good_url = "{}/{}/{},{},{}?exclude={}".format(self.url,self.key,self.latitude, self.longitude, date, self.exclude)
+        response = requests.get(self.good_url)
+       
         if response.status_code == 200:
             return response
-        else:
-            return ValueError
-        weather_data = response.json()['currently']['summary']
+        weather_data = response.json()['daily']['data'][0]['icon']
 
     def its_gon_rain(self,weather_data):
         if weather_data == 'rain':
@@ -51,6 +49,8 @@ class weather_scrape(self):
         weather_dict = {}
 
         for date in dates:
+            weather_dict.update(api_call(date))
+            
 
         
 
