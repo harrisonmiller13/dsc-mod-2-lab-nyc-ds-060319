@@ -1,56 +1,59 @@
 # Class to scrape the weather for the 2011 season
 # Berlin coords 52.52437,13.41053
-
+#######======================check which api key to use before running==============##############
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 import json
-from apikey import API_Key
+from apikey import *
 
 
-class weather_prepare(self)
-   def __init__(self):
+class weather_prepare(self):
+    def __init__(self):
         self.df = df
-        
-    # prepare date for use in dark sky api -> convert to unix time
-    def prepare_dataframe(self):
-        # self.df.drop(['Div','FTHG','FTAG','FTR','AwayTeam','HomeTeam','Season'],axis = 1, inplace = True)
-        self.df.set_index('Match_ID', inplace = True)
-        self.df['Date'] = pd.to_datetime(df['Date'])
-        self.df['unix_Date'] = (df['Date'] - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s')
-        self.df.sort_values(by = 'Date', inplace = True)
 
+    # prepare date for use in dark sky api -> convert to unix time
+    def prepare_dataframe_for_weather(self):
+        
+        self.df.set_index('Match_ID', inplace = True)
+        self.df['Date'] = pd.to_datetime(self.df['Date'])
+        self.df['Unix_Date'] = (self.df['Date'] - pd.Timestamp("1970-01-01")) // pd.Timedelta('1s')
+    
 
 
 class weather_scrape(self):
     def __init__(self):
-        self.url = 'https://api.darksky.net/forecast/'
-        self.key = "API_Key"
+        self.url = 'https://api.darksky.net/forecast'
+        self.key = API_Key
         self.latitude = "52.5200"
         self.longitude = "13.4050"
-        self.exclude = 'daily,flags,minutely,hourly,alerts'
+        self.exclude = 'currently,flags,minutely,hourly,alerts'
 
     def api_call(self,date):
     
         good_url = "{}/{}/{},{},{}?exclude={}".format(self.url,self.key,self.latitude, self.longitude, date, self.exclude)
+        
         response = requests.get(self.good_url)
-       
-        if response.status_code == 200:
-            return response
-        weather_data = response.json()['daily']['data'][0]['icon']
+        print(response)
+        weather = response.json()['daily']['data'][0]['icon']
+        return weather
 
-    def its_gon_rain(self,weather_data):
-        if weather_data == 'rain':
-            return True
-        else:
-            return False
 
     def all_the_weather(self,dates):
         weather_dict = {}
-
         for date in dates:
-            weather_dict.update(api_call(date))
+            weather_data = api_call(date)
+            weather_dict.update({date: weather_data})
+        return weather_dict
             
+
+    def adding_weather_to_df(self):
+        weather_dict = get_all_weather(self, self.df.Unix_Date)
+        wdf = pd.DataFrame(weather_dict, index = ['weather'])
+        wdf2 = pd.DataFrame.transpose(wdf)
+        wdf2 = wdf2.reset_index()
+        wdf2.rename(columns={'index': 'Unix_Date'}, inplace=True)
+        pd.merge(df, wdf4, how = 'left', on = 'Unix_Date')
 
         
 
