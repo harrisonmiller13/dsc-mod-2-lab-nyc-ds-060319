@@ -26,9 +26,8 @@ class weather_scrape(self):
     def __init__(self):
         self.url = 'https://api.darksky.net/forecast/'
         self.key = "API_Key"
-        self.berlin_lat = "52.5200"
-        self.berlin_long = "13.4050"
-        self.url_base = "https://api.darksky.net/forecast"
+        self.latitude = "52.5200"
+        self.longitude = "13.4050"
         self.exclude = 'daily,flags,minutely,hourly,alerts'
 
     def api_call(self,date):
@@ -52,7 +51,7 @@ class weather_scrape(self):
         weather_dict = {}
 
         for date in dates:
-            
+
         
 
 
