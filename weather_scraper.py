@@ -56,7 +56,7 @@ class weather_scrape:
             
 
     def adding_weather_to_df(self):
-        weather_dict = get_all_weather(self, df.Unix_Date)
+        weather_dict = all_the_weather(self, df.Unix_Date)
         wdf = pd.DataFrame(weather_dict, index = ['weather'])
         wdf2 = pd.DataFrame.transpose(wdf)
         wdf2 = wdf2.reset_index()
