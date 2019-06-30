@@ -5,7 +5,16 @@ from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 import json
+import sqlite3
 from apikey import *
+conn = sqlite3.connect('database.sqlite')
+c = conn.cursor()
+
+c.execute('''SELECT * FROM Matches WHERE season = 2011;''')
+df = pd.DataFrame(c.fetchall())
+df.columns = [x[0] for x in c.description]
+print(len(df))
+df.head()
 
 
 class weather_prepare:
