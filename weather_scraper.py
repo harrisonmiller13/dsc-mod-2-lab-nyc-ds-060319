@@ -32,14 +32,15 @@ class weather_prepare:
 class weather_scrape:
     def __init__(self):
         self.url = 'https://api.darksky.net/forecast'
-        self.key = API_Key
+        self.key = API_Key2
         self.latitude = "52.5200"
         self.longitude = "13.4050"
         self.exclude = 'currently,flags,minutely,hourly,alerts'
+        self.df = df
 
     def api_call(self,date):
     
-        good_url = "{}/{}/{},{},{}?exclude={}".format(self.url,self.key,self.latitude, self.longitude, date, self.exclude)
+        good_url = "{}/{}/{},{},{}?exclude={}".format(self.url,self.key,self.latitude, self.longitude, self.date, self.exclude)
         
         response = requests.get(good_url)
         print(response)
@@ -50,19 +51,19 @@ class weather_scrape:
     def all_the_weather(self,dates):
         weather_dict = {}
         for date in dates:
-            weather_data = api_call(date)
+            weather_data = self.api_call(date)
             weather_dict.update({date: weather_data})
         return weather_dict
             
 
     def adding_weather_to_df(self):
-        weather_dict = all_the_weather(self, df.Unix_Date)
+        weather_dict = self.all_the_weather()
         wdf = pd.DataFrame(weather_dict, index = ['weather'])
         wdf2 = pd.DataFrame.transpose(wdf)
         wdf2 = wdf2.reset_index()
         wdf2.rename(columns={'index': 'Unix_Date'}, inplace=True)
-        pd.merge(df, wdf2, how = 'left', on = 'Unix_Date')
-        return df.head()
+        dfw = pd.merge(df, wdf2, how = 'left', on = 'Unix_Date')
+        return dfw.head()
 
         
 
